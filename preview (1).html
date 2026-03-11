@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>週刊AI</title>
+
+<style>
+
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+background:linear-gradient(135deg,#ff4d6d,#ff8fab,#ffc2d1);
+}
+
+header{
+background:#111;
+color:white;
+padding:18px;
+text-align:center;
+font-size:26px;
+font-weight:bold;
+letter-spacing:2px;
+}
+
+.container{
+max-width:750px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:white;
+border-radius:14px;
+padding:22px;
+margin-bottom:25px;
+box-shadow:0 8px 20px rgba(0,0,0,0.15);
+}
+
+h2{
+margin-top:0;
+color:#ff2e63;
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:6px;
+border:1px solid #ddd;
+font-size:15px;
+}
+
+button{
+margin-top:14px;
+padding:12px 20px;
+border:none;
+border-radius:8px;
+font-size:15px;
+background:#ff2e63;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+background:#ff004c;
+}
+
+.news{
+line-height:1.9;
+white-space:pre-line;
+margin-top:20px;
+}
+
+.news h3{
+color:#ff004c;
+}
+
+.comment{
+border-top:1px solid #eee;
+padding:12px 0;
+}
+
+.user{
+font-weight:bold;
+color:#444;
+}
+
+.likes{
+font-size:13px;
+color:#888;
+margin-top:4px;
+}
+
+.share button{
+background:#333;
+margin-right:8px;
+}
+
+.rank{
+background:#fff4f6;
+padding:10px;
+border-radius:8px;
+margin-top:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+🔥 週刊AI ゴシップ速報
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>📰 熱愛ニュース生成</h2>
+
+<select id="mode">
+<option value="bunshun">文春モード</option>
+<option value="tospo">東スポモード</option>
+</select>
+
+<input id="name" placeholder="有名人の名前">
+<input id="partner" placeholder="お相手">
+<input id="place" placeholder="デート場所">
+
+<button onclick="generateNews()">記事生成</button>
+
+<div id="news" class="news"></div>
+
+<div class="share">
+<button onclick="shareX()">Xでシェア</button>
+<button onclick="shareLine()">LINEで送る</button>
+<button onclick="copyLink()">リンクコピー</button>
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>💬 ファンの声</h2>
+
+<input id="idol" placeholder="推しの名前">
+
+<button onclick="generateFan()">コメント生成</button>
+
+<div id="fan"></div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🔥 トレンドランキング</h2>
+
+<div id="ranking"></div>
+
+</div>
+
+</div>
+
+<script>
+
+function generateNews(){
+
+let mode=document.getElementById("mode").value;
+let name=document.getElementById("name").value;
+let partner=document.getElementById("partner").value;
+let place=document.getElementById("place").value;
+
+let headline="";
+let sections=[];
+
+if(mode==="bunshun"){
+
+headline=`${name}に熱愛報道　${partner}との極秘デート目撃`;
+
+sections=[
+`◆目撃された夜`,
+`${place}で${name}と${partner}が並んで歩く姿が目撃された。`,
+`◆親密な雰囲気`,
+`${partner}が${name}の荷物を持つ場面もあり、親密な関係が噂されている。`,
+`◆SNS騒然`,
+`この情報はSNSで拡散され、多くのファンが驚きを隠せない様子だ。`,
+`◆今後の動向`,
+`現在のところ${name}本人からのコメントは出ていない。`
+];
+
+}
+
+if(mode==="tospo"){
+
+headline=`【衝撃】${name}と${partner}が${place}で急接近！？`;
+
+sections=[
+`◆まさかの目撃`,
+`${place}で${name}と${partner}が並んで歩く姿が目撃されたという。`,
+`◆ネット騒然`,
+`SNSでは「ガチ？」「衝撃すぎる」といった声が続出。`,
+`◆急接近の真相`,
+`2人は終始リラックスした様子だったという。`,
+`◆真相は？`,
+`果たして2人の関係は本物なのか。`
+];
+
+}
+
+let article=`<h3>${headline}</h3>\n\n`;
+
+sections.forEach(s=>article+=s+"\n\n");
+
+document.getElementById("news").innerHTML=article;
+
+createURL();
+
+saveTrend(name);
+
+showRanking();
+
+}
+
+
+function generateFan(){
+
+let idol=document.getElementById("idol").value;
+
+let users=["古参ファン","海外ファン","ガチ恋勢","箱推し","限界オタク","新規ファン","考察班","ROM専"];
+
+let comments=[
+
+`${idol}の熱愛ニュース見て正直びっくりしてる。`,
+`${idol}推しててよかった。`,
+`${idol}ショックだけど応援する。`,
+`${idol}の幸せが一番。`,
+`${idol}尊すぎる。`,
+`${idol}恋愛してても好き。`,
+`${idol}の人生だから応援する。`,
+`${idol}TLがざわついてる。`,
+`${idol}オタク情緒崩壊。`,
+`${idol}結局また推す。`,
+`${idol}の幸せ祈る。`,
+`${idol}尊い。`,
+`${idol}ニュース衝撃。`,
+`${idol}推しは推し。`,
+`${idol}応援する。`,
+`${idol}ちょっと横になる。`,
+`${idol}ガチ恋勢つらい。`,
+`${idol}お似合いかも。`,
+`${idol}尊い存在。`,
+`${idol}推し最高。`
+
+];
+
+let shuffled=comments.sort(()=>0.5-Math.random());
+let selected=shuffled.slice(0,20);
+
+let html="";
+
+selected.forEach(c=>{
+
+let user=users[Math.floor(Math.random()*users.length)];
+let likes=Math.floor(Math.random()*4000)+10;
+
+html+=`
+<div class="comment">
+<div class="user">👤 ${user}</div>
+<div>${c}</div>
+<div class="likes">👍 ${likes}</div>
+</div>
+`;
+
+});
+
+document.getElementById("fan").innerHTML=html;
+
+}
+
+
+
+function createURL(){
+
+let name=document.getElementById("name").value;
+let partner=document.getElementById("partner").value;
+let place=document.getElementById("place").value;
+
+let url=`${location.origin}?name=${name}&partner=${partner}&place=${place}`;
+
+history.pushState({}, "", url);
+
+}
+
+
+const params=new URLSearchParams(window.location.search);
+
+if(params.get("name")){
+
+document.getElementById("name").value=params.get("name");
+document.getElementById("partner").value=params.get("partner");
+document.getElementById("place").value=params.get("place");
+
+generateNews();
+
+}
+
+
+
+function saveTrend(name){
+
+let trends=JSON.parse(localStorage.getItem("trends"))||[];
+
+trends.push(name);
+
+localStorage.setItem("trends",JSON.stringify(trends));
+
+}
+
+
+
+function showRanking(){
+
+let trends=JSON.parse(localStorage.getItem("trends"))||[];
+
+let count={};
+
+trends.forEach(n=>{
+count[n]=(count[n]||0)+1;
+});
+
+let sorted=Object.entries(count).sort((a,b)=>b[1]-a[1]);
+
+let html="";
+
+sorted.slice(0,5).forEach(t=>{
+html+=`<div class="rank">${t[0]} (${t[1]})</div>`;
+});
+
+document.getElementById("ranking").innerHTML=html;
+
+}
+
+
+
+function shareX(){
+
+let text="週刊AIでゴシップ記事作った";
+let url=encodeURIComponent(location.href);
+
+window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
+
+}
+
+function shareLine(){
+
+let url=encodeURIComponent(location.href);
+
+window.open(`https://social-plugins.line.me/lineit/share?url=${url}`);
+
+}
+
+function copyLink(){
+
+navigator.clipboard.writeText(location.href);
+
+alert("リンクコピーしました");
+
+}
+
+</script>
+
+</body>
+</html>
